@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-customer-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-customer-deployment
+  template:
+    metadata:
+      labels:
+        app: web-customer-deployment
+    spec:
+      initContainers:
+        - name: init-web-customer
+          image: php:5-apache
+          command: ["/bin/sh"]
+          args:
+            - "-c"
+            - "/script/conf/install-depend.sh && /script/conf/create-dirs.sh && /script/web/web-customer-script.sh"
+          volumeMounts:
+            - mountPath: /script/conf
+              name: common-cm
+            - mountPath: /script/web
+              name: web-customer-cm
+      containers:
+      - name: web-customer-deployment
+        image: php:5-apache
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+      volumes:
+        - name: common-cm
+          configMap:
+            name: common-cm
+            defaultMode: 0777
+        - name: web-customer-cm
+          configMap:
+            name: web-customer-cm
+            defaultMode: 0777
