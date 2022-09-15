@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: web-admin-cm
+data:
+  web-admin-script.sh: |
+    mkdir /var/www/a2billing
+    chown www-data:www-data /var/www/a2billing
+    mkdir -p /var/lib/a2billing/script
+    mkdir -p /var/run/a2billing
+    cp -rf /usr/local/src/a2billing/agent /var/www/a2billing
+    cp -rf /usr/local/src/a2billing/admin /var/www/a2billing
+    chmod 755 /usr/local/src/a2billing/admin/templates_c
+    chmod 755 /usr/local/src/a2billing/agent/templates_c
