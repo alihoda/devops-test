@@ -2,6 +2,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: dev-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
   labels:
     name: dev-ingress
 spec:
@@ -14,5 +16,19 @@ spec:
         backend:
           service:
             name: phpmyadmin-svc
+            port: 
+              number: 80
+      - pathType: Prefix
+        path: "/customer"
+        backend:
+          service:
+            name: web-customer-svc
+            port: 
+              number: 80
+      - pathType: Prefix
+        path: "/admin"
+        backend:
+          service:
+            name: admin-svc
             port: 
               number: 80
