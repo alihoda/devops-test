@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-server
+  namespace: db-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db-server
+  template:
+    metadata:
+      labels:
+        app: db-server
+    spec:
+      containers:
+      - name: db-server
+        image: mysql
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3306
+        command: ["/bin/sh"]
+        args:
+          - "-c"
+          - "mysql -u root -p < a2biling/DataBase/mysql-5.x/a2billing-createdb-user.sql && source a2biling/DataBase/mysql-5.x/install-db.sh"
