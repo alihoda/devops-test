@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: asterisk-cm
+data:
+  a2billing-conf.sh: |
+    cp /usr/local/src/a2billing/a2billing.conf /etc/
+    sed 's/localhost/db-server/' /etc/a2billing.conf
+  fix-permission.sh: |
+    chmod 777 /etc/asterisk
+    touch /etc/asterisk/additional_a2billing_iax.conf
+    touch /etc/asterisk/additional_a2billing_sip.conf
+    echo \#include additional_a2billing_sip.conf >> /etc/asterisk/sip.conf
+    echo \#include additional_a2billing_iax.conf >> /etc/asterisk/iax.conf
+    chown -Rf www-data /etc/asterisk/additional_a2billing_iax.conf
+    chown -Rf www-data /etc/asterisk/additional_a2billing_sip.conf
+    echo "
+    [general]
+    enabled = yes
+    port = 5038
+    bindaddr = 0.0.0.0
+
+    [myasterisk]
+    secret=mycode
+    read=system,call,log,verbose,command,agent,user
+    write=system,call,log,verbose,command,agent,user
+    " > /etc/asterisk/manager.conf
+  install-agi.sh: |
+    mkdir /usr/share/asterisk/agi-bin
+    chown asterisk:asterisk /usr/share/asterisk/agi-bin
+    ln -s /usr/local/src/a2billing/AGI/a2billing.php /usr/share/asterisk/agi-bin/a2billing.php
+    ln -s /usr/local/src/a2billing/AGI/lib /usr/share/asterisk/agi-bin/lib
+    chmod +x /usr/share/asterisk/agi-bin/a2billing.php
+    chmod +x /usr/share/asterisk/agi-bin/a2billing_monitoring.php
