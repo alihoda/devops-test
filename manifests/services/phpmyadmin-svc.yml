@@ -4,7 +4,8 @@ metadata:
   name: phpmyadmin-svc
   namespace: db-ns
 spec:
-  type: ClusterIP
+  type: ExternalName
+  externalName: phpmyadmin-svc.db-ns.svc.cluster.local
   selector:
     app: phpmyadmin
   ports:
