@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-admin-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-admin-deployment
+  template:
+    metadata:
+      labels:
+        app: web-admin-deployment
+    spec:
+      initContainers:
+        - name: init-web-admin
+          image: php:5-apache
+          command: ["/bin/sh"]
+          args:
+            - "-c"
+            - "/script/conf/install-depend.sh && /script/conf/create-dirs.sh && /script/web/web-admin-script.sh"
+          volumeMounts:
+            - mountPath: /script/conf
+              name: common-cm
+            - mountPath: /script/web
+              name: web-admin-cm
+      containers:
+      - name: web-admin-deployment
+        image: php:5-apache
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+      volumes:
+        - name: common-cm
+          configMap:
+            name: common-cm
+            defaultMode: 0777
+        - name: web-admin-cm
+          configMap:
+            name: web-admin-cm
+            defaultMode: 0777
