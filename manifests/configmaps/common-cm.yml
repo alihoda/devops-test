@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: common-cm
+data:
+  install-depend.sh: |
+    apt-get install libapache2-mod-php5 php5 php5-common
+    apt-get install php5-cli php5-mysql mysql-server apache2 php5-gd php5-mcrypt
+    apt-get install openssh-server subversion
+    apt-get install asterisk
+    cd /usr/local/a2billing
+    curl -sS https://getcomposer.org/installer | php
+    php composer.phar update
+    php composer.phar install
+  create-dirs.sh: |
+    mkdir /usr/local/src/a2billing
+    git clone https://github.com/Star2Billing/a2billing.git /usr/local/src/a2billing/ && rm -rf /usr/local/src/a2billing/.git
+
+
