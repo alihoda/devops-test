@@ -29,13 +29,3 @@ And there is one Secret just to keep *user-pass* and *db-name*.
 All Services are in the *default* namespace except *db-server-svc* and *phpmyadmin-svc* which there are in the *db-ns* namespace, because it is better to keep database related objects in separate namespace.
 
 > Because the Ingress object needs to has access to *phpmyadmin-svc*, *phpmyadmin-svc* type is *ExternalName* with the FQDN.
-
----
-
-## Notes
-
-It seems you said **a sample Helm chart with a pipeline**, but I didn't have any idea to create a pipeline for a Helm chart yet, so there is no Helm chart and pipeline.
-
-The *asterisk* was new for me and it was fun to work with it and k8s.
-
-Thanks.
